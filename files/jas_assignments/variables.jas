@@ -1,0 +1,46 @@
+// Read in x, y and z
+
+// print x + 3
+// print x + z
+// print z - y
+// print x + y + z - 10
+
+.main
+    .var
+    x
+    y
+    z
+    .end-var
+
+IN
+ISTORE x
+IN
+ISTORE y
+IN
+ISTORE z
+
+ILOAD x
+BIPUSH 3
+IADD
+OUT
+
+ILOAD x
+ILOAD z
+IADD
+OUT
+
+ILOAD z
+ILOAD y
+ISUB
+OUT
+
+ILOAD x
+ILOAD y
+ILOAD z
+BIPUSH 10
+ISUB
+IADD
+IADD
+OUT
+
+.end-main

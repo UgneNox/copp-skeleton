@@ -10,41 +10,76 @@ ijvm* init_ijvm(char *binary_path, FILE* input , FILE* output)
 {
   // do not change these first three lines
   ijvm* m = (ijvm *) malloc(sizeof(ijvm));
-  // note that malloc gives you memory, but gives no guarantees on the initial
-  // values of that memory. It might be all zeroes, or be random data.
-  // It is hence important that you initialize all variables in the ijvm
-  // struct and do not assume these are set to zero.
   m->in = input;
   m->out = output;
   
-  // TODO: implement me
+  // MAGIC NUMBER
+  uint8_t numbuf[4];
+  fread(numbuf, sizeof(uint8_t), 4, input);
+  uint32_t number = read_uint32(numbuf);
+  swap_uint32(number);
+
+  if (number != MAGIC_NUMBER)
+  {
+    fclose(input);
+    return NULL;
+  }
+
+  // CONSTANT POOL ORIGIN - SKIP
+  fread(numbuf, sizeof(uint8_t), 4, input); 
+
+  // CONSTANT POOL SIZE
+  fread(numbuf, sizeof(uint8_t), 4, input);
+  uint32_t constant_pool_size = read_uint32(numbuf);
+  swap_uint32(constant_pool_size);
+  m->constant_pool = (word_t *)malloc(constant_pool_size);
+
+  // CONSTANT POOL DATA
+  fread(m->constant_pool, sizeof(uint8_t), constant_pool_size, input);
+
+  // TEXT ORIGIN - SKIP
+  fread(numbuf, sizeof(uint8_t), 4, input);
+
+  // TEXT SIZE
+  fread(numbuf, sizeof(uint8_t), 4, input);
+  uint32_t text_size = read_uint32(numbuf);
+  swap_uint32(text_size);
+  m->text = (byte_t *)malloc(text_size);
+
+  // TEXT DATA
+  fread(m->text, sizeof(uint8_t), text_size, input);
+
+  // INITIALIZE VARIABLES FROM STRUCT
+  m->constant_pool_size = constant_pool_size;
+  m->text_size = text_size;
 
   return m;
 }
 
 void destroy_ijvm(ijvm* m) 
 {
-  // TODO: implement me
-
-  free(m); // free memory for struct
+  if (m->constant_pool) free(m->constant_pool);
+  if (m->text) free(m->text);
+  free(m);
 }
 
 byte_t *get_text(ijvm* m) 
 {
-  // TODO: implement me
-  return NULL;
+  return m->text;
 }
 
 unsigned int get_text_size(ijvm* m) 
 {
-  // TODO: implement me
-  return 0;
+  return m->text_size;
 }
 
 word_t get_constant(ijvm* m,int i) 
 {
-  // TODO: implement me
-  return 0;
+  if (i < 0 || i >= m->constant_pool_size / 4) {
+        fprintf(stderr, "Index out of bounds: %d\n", i);
+        return 0;
+    }
+  return m->constant_pool[i];
 }
 
 unsigned int get_program_counter(ijvm* m) 

@@ -1,0 +1,82 @@
+// int is_even(int x) {
+// if (x == 0)
+//     return 'T';
+// return is_odd(x - 1);
+// }
+
+// int is_odd(int x) {
+// if (x == 0)
+//     return 'F';
+// return is_even(x - 1);
+// }
+
+// read in x
+// print is_even(x) // this uses x as a number, so '0' is 48. 
+
+.constant
+objref  0xCAFE  // may be any value.  Needed by invokevirtual.
+.end-constant
+
+.main
+.var
+x
+.end-var
+
+IN 
+ISTORE x
+LDC_W objref
+ILOAD x
+INVOKEVIRTUAL is_even
+OUT
+.end-main
+
+.method is_even(x)
+ILOAD x
+DUP         
+IFEQ EDONE
+
+
+ILOAD x
+BIPUSH 1
+ISUB
+ISTORE x
+
+LDC_W objref
+ILOAD x
+INVOKEVIRTUAL is_odd
+IRETURN
+
+EDONE:
+BIPUSH 84
+IF_ICMPEQ EEND
+BIPUSH 84
+
+EEND:
+IRETURN
+.end-method
+
+
+.method is_odd(x)
+ILOAD x
+DUP         
+IFEQ ODONE
+
+ILOAD x
+BIPUSH 1
+ISUB
+ISTORE x
+
+LDC_W objref
+ILOAD x
+INVOKEVIRTUAL is_even
+IRETURN
+
+ODONE:
+BIPUSH 70
+IF_ICMPEQ OEND
+BIPUSH 70
+
+OEND:
+IRETURN
+.end-method
+

@@ -1,0 +1,32 @@
+// Read in x, y 
+// print characters x, x + 2, ..., x + 2*y
+
+.main
+IN // x 
+IN // y
+
+SWAP 
+DUP
+OUT
+SWAP
+
+LOOP: 
+DUP         // x, y, y
+BIPUSH 0x00 // x, y, y, 1
+IF_ICMPEQ DONE // DONE IF y = 1
+
+SWAP
+BIPUSH 2
+IADD
+DUP
+OUT
+SWAP
+BIPUSH 1
+ISUB
+GOTO LOOP
+
+
+DONE: 
+HALT 
+
+.end-main

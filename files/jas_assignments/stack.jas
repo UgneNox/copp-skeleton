@@ -1,0 +1,39 @@
+// Reads in x, y and z
+// print z + 3
+// print y + z
+// print z - y
+// print x + y + z - 10
+  
+.main
+
+    IN //x
+    IN //x, y
+    DUP //x, y, y
+    DUP //x, y, y, y
+    DUP //x, y, y, y, y
+    DUP //x, y, y, y, y, y
+    IN  //x, y, y, y, y, y, z
+    DUP //x, y, y, y, y, y, z, z
+    BIPUSH 3 //x, y, y, y, y, y, z, z, 3
+    IADD //x, y, y, y, y, y, z, z+3
+    OUT  //x, y, y, y, y, y, z
+    IADD //x, y, y, y, y, y+z
+    DUP  //x, y, y, y, y, y+z, y+z
+    OUT  //x, y, y, y, y, y+z
+    SWAP //x, y, y, y, y+z, y
+    ISUB //x, y, y, y, z
+    SWAP //x, y, y, z, y
+    ISUB //x, y, y, z-y
+    DUP  //x, y, y, z-y, z-y
+    OUT  //x, y, y, z-y
+    IADD //x, y, z
+
+
+    BIPUSH 10 //x, y, z, 10
+    ISUB //x, y, z-10
+    IADD //x, y+z-10
+    IADD //x+y+z-10
+    OUT
+
+    
+.end-main
